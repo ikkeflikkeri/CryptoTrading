@@ -1,5 +1,4 @@
-﻿using CryptoTrading.Common.Models;
-using CryptoTrading.Exchanges.Bittrex.Agent.Responses;
+﻿using CryptoTrading.Exchanges.Bittrex.Agent.Responses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
 using CryptoTrading.Exchanges.Bittrex.Agent.Models;
+using CryptoTrading.Common.Models;
 
 namespace CryptoTrading.Exchanges.Bittrex.Agent
 {
