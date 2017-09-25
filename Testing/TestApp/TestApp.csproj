@@ -52,6 +52,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Calculations\Indicators\CryptoTrading.Calculations.Indicators.csproj">
+      <Project>{1467F0A8-C036-4500-9591-CF39722C40B8}</Project>
+      <Name>CryptoTrading.Calculations.Indicators</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CryptoTrading.Common\CryptoTrading.Common.csproj">
+      <Project>{0c3026b7-a55a-4cdd-9a6a-a225256113ab}</Project>
+      <Name>CryptoTrading.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Exchanges\Bittrex\Agent\CryptoTrading.Exchanges.Bittrex.Agent.csproj">
       <Project>{BAC15091-34F5-4585-895B-48B864BB8C54}</Project>
       <Name>CryptoTrading.Exchanges.Bittrex.Agent</Name>

@@ -1,5 +1,8 @@
-﻿using CryptoTrading.Exchanges.Bittrex.Agent;
+﻿using CryptoTrading.Calculations.Indicators;
+using CryptoTrading.Exchanges.Bittrex.Agent;
+using System;
 using System.Configuration;
+using System.Linq;
 
 namespace TestApp
 {
@@ -10,23 +13,27 @@ namespace TestApp
             var bittrex = new BittrexAgent();
             bittrex.SetApiKey(ConfigurationManager.AppSettings["BittrexApiKey"], ConfigurationManager.AppSettings["BittrexApiSecret"]);
 
-            var buyOrderId = bittrex.CreateBuyOrder("BTC-ETH", 0.1m, 0.01m).Result.Uuid;
-            var sellOrderId = bittrex.CreateSellOrder("BTC-ETH", 0.1m, 1m).Result.Uuid;
+            var markets = bittrex.GetMarkets().Result.Where(m => m.MarketName.Contains("ETH-") || m.MarketName.Contains("BTC-"));
 
-            var openOrders = bittrex.GetOpenOrders("BTC-ETH");
-            var order = bittrex.GetOrder(sellOrderId);
+            foreach (var market in markets)
+            {
+                var result = bittrex.GetMarketSummary(market.MarketName);
 
-            bittrex.CancelOrder(buyOrderId);
-            bittrex.CancelOrder(sellOrderId);
+                if (result == null)
+                    continue;
 
-            var neoBalance = bittrex.GetBalance("NEO");
-            var ethDepositAddress = bittrex.GetDepositAddress("ETH");
+                var volume = result.Result[0].BaseVolume;
 
-            var orderHistory = bittrex.GetOrderHistory("BTC-ETH");
-            var withdrawalHistory = bittrex.GetWithdrawalHistory("ETH");
-            var depositHistory = bittrex.GetDepositHistory("ETH");
+                if (volume < 250)
+                    continue;
 
-            var ticks = bittrex.GetTicks("BTC-ETH", "thirtyMin");
+                var ticks = bittrex.GetTicks(market.MarketName, "thirtyMin");
+
+                var rsi = new RsiIndicator().Calculate(ticks);
+
+                if(rsi >= 70 || rsi < 30)
+                    Console.WriteLine(market.MarketName + " - " + rsi);
+            }
         }
     }
 }
