@@ -1,4 +1,6 @@
-﻿using CryptoTrading.Exchanges.Bittrex.Agent.Responses;
+﻿using CryptoTrading.Common.Models;
+using CryptoTrading.Exchanges.Bittrex.Agent.Responses;
+using System.Collections.Generic;
 
 namespace CryptoTrading.Exchanges.Bittrex.Agent
 {
@@ -24,6 +26,6 @@ namespace CryptoTrading.Exchanges.Bittrex.Agent
         GetWithdrawalHistoryResponse GetWithdrawalHistory(string currency);
         GetDepositHistoryResponse GetDepositHistory(string currency);
         void SetApiKey(string key, string secret);
-        GetTicksResponse GetTicks(string market, string interval);
+        List<MarketTick> GetTicks(string market, string interval);
     }
 }

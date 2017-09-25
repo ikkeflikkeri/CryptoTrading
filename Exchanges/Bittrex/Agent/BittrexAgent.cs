@@ -1,4 +1,5 @@
-﻿using CryptoTrading.Exchanges.Bittrex.Agent.Responses;
+﻿using CryptoTrading.Common.Models;
+using CryptoTrading.Exchanges.Bittrex.Agent.Responses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,6 +7,8 @@ using System.Globalization;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
+using CryptoTrading.Exchanges.Bittrex.Agent.Models;
 
 namespace CryptoTrading.Exchanges.Bittrex.Agent
 {
@@ -169,7 +172,7 @@ namespace CryptoTrading.Exchanges.Bittrex.Agent
             ApiSecret = secret;
         }
 
-        public GetTicksResponse GetTicks(string market, string interval)
+        public List<MarketTick> GetTicks(string market, string interval)
         {
             string method = "pub/market/GetTicks?marketName=" + market + "&tickInterval=" + interval + "&_=" + DateTime.Now.Ticks.ToString();
 
@@ -182,16 +185,29 @@ namespace CryptoTrading.Exchanges.Bittrex.Agent
                     var response = client.GetAsync(method).Result;
 
                     if (response.IsSuccessStatusCode)
-                        return response.Content.ReadAsAsync<GetTicksResponse>().Result;
+                        return response.Content.ReadAsAsync<GetTicksResponse>().Result.Result.Select(MapToMarketTick).ToList();
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
-                    return default(GetTicksResponse);
+                    return new List<MarketTick>();
                 }
             }
 
-            return default(GetTicksResponse);
+            return new List<MarketTick>();
+        }
+
+        private MarketTick MapToMarketTick(GetTicksInfo tick)
+        {
+            return new MarketTick
+            {
+                Open = tick.O,
+                Close = tick.C,
+                High = tick.H,
+                Low = tick.L,
+                Time = tick.T,
+                Volume = tick.V
+            };
         }
 
         private T GetApiCall<T>(string method, bool isPrivateCall = false)
